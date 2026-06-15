@@ -1,36 +1,115 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CVMatch AI
 
-## Getting Started
+SaaS de construcción de CVs con análisis ATS e inteligencia artificial.
 
-First, run the development server:
+## Stack tecnológico
+
+- **Frontend**: Next.js 15 (App Router), TypeScript, Tailwind CSS, shadcn/ui (Base UI)
+- **Base de datos**: PostgreSQL + Prisma 7 con adaptador `@prisma/adapter-pg`
+- **Autenticación**: Auth.js v5 (next-auth@beta) con Google OAuth
+- **Pagos**: Stripe SDK v2026 (API `2026-05-27.dahlia`)
+- **IA**: OpenAI GPT-4o-mini
+- **PDF**: jsPDF + html2canvas (exportación client-side)
+
+## Funcionalidades
+
+### Plan Free
+- Hasta 2 CVs guardados
+- Hasta 3 análisis ATS
+- Hasta 2 cartas de presentación
+- Constructor de CV multi-tab
+- Exportación PDF
+
+### Plan Pro (9€/mes)
+- CVs y análisis ilimitados
+- Optimización automática de CV con IA
+- Cartas de presentación ilimitadas
+- Gestión de suscripción (Stripe Billing Portal)
+
+## Requisitos previos
+
+- Node.js 18+
+- PostgreSQL (local o Supabase/Neon)
+- Cuenta Google Cloud (OAuth credentials)
+- Cuenta Stripe
+- API Key de OpenAI
+
+## Instalación
 
 ```bash
+git clone <repo>
+cd cvmatch-ai
+npm install
+cp .env.example .env
+# Editar .env con tus credenciales
+npx prisma migrate dev
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Variables de entorno
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Ver [.env.example](.env.example) para la lista completa.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Descripción |
+|----------|-------------|
+| `DATABASE_URL` | Cadena de conexión PostgreSQL |
+| `NEXTAUTH_SECRET` | Secret aleatorio para Auth.js |
+| `GOOGLE_CLIENT_ID` | OAuth 2.0 Client ID de Google |
+| `GOOGLE_CLIENT_SECRET` | OAuth 2.0 Client Secret de Google |
+| `STRIPE_SECRET_KEY` | API Key secreta de Stripe |
+| `STRIPE_WEBHOOK_SECRET` | Secret del webhook de Stripe |
+| `STRIPE_PRO_PRICE_ID` | ID del precio del plan Pro en Stripe |
+| `OPENAI_API_KEY` | API Key de OpenAI |
+| `NEXT_PUBLIC_APP_URL` | URL pública de la app (ej: https://tudominio.com) |
 
-## Learn More
+## Arquitectura
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/
+│   ├── (dashboard)/         # Rutas protegidas por Auth.js
+│   │   ├── dashboard/       # Panel principal con estadísticas
+│   │   ├── resumes/         # Constructor y listado de CVs
+│   │   ├── ats/             # Análisis ATS + optimización IA
+│   │   ├── cover-letters/   # Generador de cartas
+│   │   ├── pricing/         # Planes y checkout Stripe
+│   │   └── settings/        # Perfil y suscripción
+│   ├── api/
+│   │   ├── auth/            # Auth.js handlers
+│   │   ├── resumes/         # CRUD de CVs
+│   │   ├── ats/             # Análisis y optimización
+│   │   ├── cover-letters/   # Generación y guardado
+│   │   └── stripe/          # Checkout, portal y webhook
+│   ├── login/
+│   └── page.tsx             # Landing page pública
+├── components/
+│   ├── ui/                  # Componentes shadcn/base-ui
+│   ├── dashboard/           # Navbar y layout
+│   ├── resumes/             # Builder, preview, PDF export
+│   ├── ats/                 # Analyzer con resultados
+│   ├── cover-letters/       # Generator form
+│   └── billing/             # Upgrade card
+├── lib/
+│   ├── prisma.ts            # Singleton PrismaClient + PrismaPg adapter
+│   ├── auth.ts              # Configuración Auth.js v5
+│   ├── stripe.ts            # Instancia Stripe
+│   ├── openai.ts            # Funciones IA (analyze, optimize, coverLetter)
+│   └── utils.ts             # cn(), formatDate(), absoluteUrl()
+├── middleware.ts             # Protección de rutas dashboard
+└── types/
+    └── next-auth.d.ts       # Augmentación Session con user.id
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Despliegue en Vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Conecta el repositorio en [vercel.com](https://vercel.com)
+2. Añade todas las variables de entorno del `.env.example`
+3. Configura el webhook de Stripe apuntando a `https://tudominio.com/api/stripe/webhook`
+4. Ejecuta las migraciones de Prisma con `npx prisma migrate deploy`
 
-## Deploy on Vercel
+## Notas técnicas importantes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Prisma 7**: No incluye `url` en el datasource del schema. La URL se pasa vía `prisma.config.ts` y el adaptador `PrismaPg`.
+- **shadcn/ui base-ui**: No soporta la prop `asChild`. Usar `buttonVariants()` + `<Link>` para botones-enlace.
+- **Stripe 2026**: `current_period_end` → `billing_cycle_anchor`. `Invoice.subscription` → `invoice.parent.subscription_details.subscription`.
+- **Auth.js v5**: Estrategia JWT + `PrismaAdapter`. El `user.id` se propaga via callbacks `jwt` y `session`.
