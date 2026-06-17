@@ -94,7 +94,7 @@ export default async function PricingPage() {
             {isPro && <Badge className="w-fit mb-2">Plan actual</Badge>}
             <CardTitle className="text-xl">Pro</CardTitle>
             <div className="flex items-baseline gap-1">
-              <span className="text-4xl font-bold">€12</span>
+              <span className="text-4xl font-bold">€9</span>
               <span className="text-muted-foreground">/mes</span>
             </div>
             <CardDescription>Para profesionales activos en búsqueda.</CardDescription>

@@ -24,7 +24,7 @@ export function UpgradeButton() {
   return (
     <Button className="w-full" size="lg" onClick={handleUpgrade} disabled={loading}>
       <Zap className="h-4 w-4 mr-2" />
-      {loading ? "Redirigiendo..." : "Actualizar a Pro – €12/mes"}
+      {loading ? "Redirigiendo..." : "Actualizar a Pro – €9/mes"}
     </Button>
   )
 }

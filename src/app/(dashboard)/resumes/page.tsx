@@ -18,8 +18,8 @@ export default async function ResumesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Mis CVs</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl font-black text-white">Mis CVs</h1>
+          <p className="text-white/40">
             {resumes.length} CV{resumes.length !== 1 ? "s" : ""} guardado{resumes.length !== 1 ? "s" : ""}
           </p>
         </div>

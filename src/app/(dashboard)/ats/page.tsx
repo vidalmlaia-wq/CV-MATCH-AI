@@ -25,8 +25,8 @@ export default async function ATSPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">Análisis ATS</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-3xl font-black text-white">Análisis ATS</h1>
+        <p className="text-white/40">
           Comprueba la compatibilidad de tu CV con los sistemas de selección automática.
         </p>
       </div>
@@ -35,26 +35,25 @@ export default async function ATSPage() {
 
       {analyses.length > 0 && (
         <div>
-          <h2 className="text-xl font-semibold mb-4">Análisis anteriores</h2>
+          <h2 className="text-xl font-bold text-white mb-4">Análisis anteriores</h2>
           <div className="grid gap-3">
             {analyses.map((a) => (
-              <Card key={a.id}>
-                <CardContent className="flex items-center justify-between py-4">
-                  <div>
-                    <p className="font-medium">{a.jobTitle}</p>
-                    <p className="text-sm text-muted-foreground">{formatDate(a.createdAt)}</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                    <Badge
-                      variant={a.score >= 80 ? "default" : a.score >= 60 ? "secondary" : "destructive"}
-                      className="text-base px-3 py-1"
-                    >
-                      {a.score}%
-                    </Badge>
-                  </div>
-                </CardContent>
-              </Card>
+              <div key={a.id} className="bg-white/5 border border-white/10 rounded-xl px-5 py-4 flex items-center justify-between">
+                <div>
+                  <p className="font-medium text-white">{a.jobTitle}</p>
+                  <p className="text-sm text-white/40">{formatDate(a.createdAt)}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <TrendingUp className="h-4 w-4 text-white/30" />
+                  <span className={`text-base font-bold px-3 py-1 rounded-full ${
+                    a.score >= 80 ? "bg-green-500/20 text-green-400" :
+                    a.score >= 60 ? "bg-yellow-500/20 text-yellow-400" :
+                    "bg-red-500/20 text-red-400"
+                  }`}>
+                    {a.score}%
+                  </span>
+                </div>
+              </div>
             ))}
           </div>
         </div>
