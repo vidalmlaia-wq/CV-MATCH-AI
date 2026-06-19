@@ -1,10 +1,8 @@
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { CoverLetterGenerator } from "@/components/cover-letters/generator"
-import { Card, CardContent } from "@/components/ui/card"
-import { buttonVariants } from "@/components/ui/button"
 import Link from "next/link"
-import { formatDate, cn } from "@/lib/utils"
+import { formatDate } from "@/lib/utils"
 import { Mail, Eye } from "lucide-react"
 
 export default async function CoverLettersPage() {
@@ -24,31 +22,34 @@ export default async function CoverLettersPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-black text-white">Cartas de presentación</h1>
-        <p className="text-white/40">Genera cartas personalizadas con IA en segundos.</p>
+        <p className="text-xs font-semibold text-indigo-600 uppercase tracking-widest mb-1">IA</p>
+        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Cartas de presentación</h1>
+        <p className="text-gray-400 text-sm mt-1">Genera cartas personalizadas con IA en segundos.</p>
       </div>
 
       <CoverLetterGenerator isPro={isPro} />
 
       {letters.length > 0 && (
         <div>
-          <h2 className="text-xl font-bold text-white mb-4">Cartas guardadas</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-4">Cartas guardadas</h2>
           <div className="grid md:grid-cols-2 gap-4">
             {letters.map((letter) => (
-              <div key={letter.id} className="bg-white/5 border border-white/10 rounded-2xl p-5">
+              <div key={letter.id} className="glass rounded-2xl p-5 border border-white/80">
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <p className="font-semibold text-white">{letter.title}</p>
-                    <p className="text-sm text-white/40">
+                    <p className="font-semibold text-gray-900">{letter.title}</p>
+                    <p className="text-sm text-gray-400">
                       {letter.company} · {formatDate(letter.updatedAt)}
                     </p>
                   </div>
-                  <Mail className="h-5 w-5 text-pink-400" />
+                  <div className="h-8 w-8 rounded-lg bg-[#fce7f3] flex items-center justify-center">
+                    <Mail className="h-4 w-4 text-pink-600" />
+                  </div>
                 </div>
-                <p className="text-sm text-white/40 line-clamp-3 mb-4">{letter.content}</p>
+                <p className="text-sm text-gray-400 line-clamp-3 mb-4">{letter.content}</p>
                 <Link
                   href={`/cover-letters/${letter.id}`}
-                  className="inline-flex items-center gap-1.5 text-sm text-violet-400 hover:text-violet-300 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-sm text-indigo-600 hover:text-indigo-800 font-medium transition-colors"
                 >
                   <Eye className="h-4 w-4" /> Ver carta
                 </Link>

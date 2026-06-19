@@ -1,8 +1,6 @@
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { ATSAnalyzer } from "@/components/ats/analyzer"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { formatDate } from "@/lib/utils"
 import { TrendingUp } from "lucide-react"
 
@@ -25,8 +23,9 @@ export default async function ATSPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-black text-white">Análisis ATS</h1>
-        <p className="text-white/40">
+        <p className="text-xs font-semibold text-indigo-600 uppercase tracking-widest mb-1">Herramientas</p>
+        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Análisis ATS</h1>
+        <p className="text-gray-400 text-sm mt-1">
           Comprueba la compatibilidad de tu CV con los sistemas de selección automática.
         </p>
       </div>
@@ -35,20 +34,20 @@ export default async function ATSPage() {
 
       {analyses.length > 0 && (
         <div>
-          <h2 className="text-xl font-bold text-white mb-4">Análisis anteriores</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-4">Análisis anteriores</h2>
           <div className="grid gap-3">
             {analyses.map((a) => (
-              <div key={a.id} className="bg-white/5 border border-white/10 rounded-xl px-5 py-4 flex items-center justify-between">
+              <div key={a.id} className="glass rounded-xl px-5 py-4 flex items-center justify-between border border-white/80">
                 <div>
-                  <p className="font-medium text-white">{a.jobTitle}</p>
-                  <p className="text-sm text-white/40">{formatDate(a.createdAt)}</p>
+                  <p className="font-medium text-gray-900">{a.jobTitle}</p>
+                  <p className="text-sm text-gray-400">{formatDate(a.createdAt)}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <TrendingUp className="h-4 w-4 text-white/30" />
-                  <span className={`text-base font-bold px-3 py-1 rounded-full ${
-                    a.score >= 80 ? "bg-green-500/20 text-green-400" :
-                    a.score >= 60 ? "bg-yellow-500/20 text-yellow-400" :
-                    "bg-red-500/20 text-red-400"
+                  <TrendingUp className="h-4 w-4 text-gray-300" />
+                  <span className={`text-sm font-bold px-3 py-1 rounded-full ${
+                    a.score >= 80 ? "bg-emerald-50 text-emerald-700" :
+                    a.score >= 60 ? "bg-amber-50 text-amber-700" :
+                    "bg-rose-50 text-rose-700"
                   }`}>
                     {a.score}%
                   </span>
