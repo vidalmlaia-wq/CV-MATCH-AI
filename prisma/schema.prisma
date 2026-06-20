@@ -12,6 +12,7 @@ model User {
   email         String    @unique
   emailVerified DateTime?
   image         String?
+  voiceSamples  String?   @db.Text
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 

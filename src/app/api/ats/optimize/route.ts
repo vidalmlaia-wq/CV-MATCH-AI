@@ -7,6 +7,7 @@ const schema = z.object({
   analysisId: z.string().optional(),
   resumeText: z.string().min(50),
   jobDescription: z.string().min(50),
+  lang: z.enum(["es", "en"]).default("es"),
 })
 
 export async function POST(req: Request) {
@@ -26,9 +27,14 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json()
-  const { analysisId, resumeText, jobDescription } = schema.parse(body)
+  const { analysisId, resumeText, jobDescription, lang } = schema.parse(body)
 
-  const optimized = await optimizeResume(resumeText, jobDescription)
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { voiceSamples: true },
+  })
+
+  const optimized = await optimizeResume(resumeText, jobDescription, lang, user?.voiceSamples)
 
   if (analysisId) {
     await prisma.aTSAnalysis.updateMany({

@@ -49,13 +49,12 @@
 }
 
 :root {
-  --background: oklch(0.99 0 0);
+  --background: #faf8ff;
   --foreground: oklch(0.12 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.12 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.12 0 0);
-  /* Accent: indigo eléctrico limpio */
   --primary: oklch(0.52 0.22 264);
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.96 0.01 264);
@@ -74,7 +73,7 @@
   --chart-4: oklch(0.75 0.15 50);
   --chart-5: oklch(0.60 0.18 30);
   --radius: 1rem;
-  --sidebar: oklch(0.99 0 0);
+  --sidebar: #faf8ff;
   --sidebar-foreground: oklch(0.12 0 0);
   --sidebar-primary: oklch(0.52 0.22 264);
   --sidebar-primary-foreground: oklch(1 0 0);
@@ -82,47 +81,70 @@
   --sidebar-accent-foreground: oklch(0.40 0.10 264);
   --sidebar-border: oklch(0.92 0 0);
   --sidebar-ring: oklch(0.52 0.22 264 / 40%);
-
-  /* Pastel blobs */
-  --blob-lavender: #ede9fe;
-  --blob-peach: #ffe4d6;
-  --blob-mint: #d1fae5;
-  --blob-rose: #fce7f3;
 }
 
-/* Glass utility */
+/* ── Aurora mesh background ── */
+.aurora-bg {
+  background-color: #faf8ff;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 10% 0%,   rgba(167,139,250,0.35) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 5%,   rgba(251,191,202,0.30) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 50% at 50% 100%,  rgba(167,243,208,0.25) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 80% 60%,  rgba(196,181,253,0.20) 0%, transparent 50%);
+}
+
+/* ── Glass utilities ── */
 .glass {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: rgba(255,255,255,0.68);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.80);
+}
+.glass-strong {
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid rgba(255,255,255,0.90);
 }
 .glass-subtle {
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.70);
+  background: rgba(255,255,255,0.50);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.65);
 }
 
+/* ── Animations ── */
 @keyframes float {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-14px) rotate(1deg); }
+  50%       { transform: translateY(-18px) rotate(1.5deg); }
 }
 @keyframes blob-drift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(20px, -20px) scale(1.04); }
-  66% { transform: translate(-15px, 10px) scale(0.97); }
+  0%, 100% { transform: translate(0,0) scale(1); }
+  33%       { transform: translate(30px,-25px) scale(1.06); }
+  66%       { transform: translate(-20px,15px) scale(0.96); }
 }
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmer {
+  from { background-position: -200% center; }
+  to   { background-position: 200% center; }
 }
 
-.animate-float { animation: float 5s ease-in-out infinite; }
-.animate-blob { animation: blob-drift 12s ease-in-out infinite; }
-.animate-blob-delay { animation: blob-drift 14s ease-in-out infinite 3s; }
-.animate-blob-delay2 { animation: blob-drift 10s ease-in-out infinite 6s; }
-.animate-fade-up { animation: fade-up 0.6s ease both; }
+.animate-float        { animation: float 6s ease-in-out infinite; }
+.animate-blob         { animation: blob-drift 14s ease-in-out infinite; }
+.animate-blob-delay   { animation: blob-drift 17s ease-in-out infinite 4s; }
+.animate-blob-delay2  { animation: blob-drift 12s ease-in-out infinite 8s; }
+.animate-fade-up      { animation: fade-up 0.7s ease both; }
+
+/* gradient text */
+.text-gradient {
+  background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 40%, #be185d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
 .dark {
   --background: oklch(0.13 0 0);

@@ -8,6 +8,7 @@ const analyzeSchema = z.object({
   resumeText: z.string().min(50),
   jobTitle: z.string().min(1),
   jobDescription: z.string().min(50),
+  lang: z.enum(["es", "en"]).default("es"),
 })
 
 export async function POST(req: Request) {
@@ -30,9 +31,9 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json()
-  const { resumeId, resumeText, jobTitle, jobDescription } = analyzeSchema.parse(body)
+  const { resumeId, resumeText, jobTitle, jobDescription, lang } = analyzeSchema.parse(body)
 
-  const result = await analyzeResumeATS(resumeText, jobDescription)
+  const result = await analyzeResumeATS(resumeText, jobDescription, lang)
 
   const analysis = await prisma.aTSAnalysis.create({
     data: {

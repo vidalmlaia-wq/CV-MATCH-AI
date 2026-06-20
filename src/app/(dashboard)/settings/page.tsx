@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { formatDate } from "@/lib/utils"
 import { ManageBillingButton } from "@/components/billing/manage-button"
 import { UpgradeButton } from "@/components/billing/upgrade-button"
+import { VoiceProfile } from "@/components/settings/voice-profile"
 import { Sparkles, FileText, Target, Mail } from "lucide-react"
 
 export default async function SettingsPage() {
@@ -32,6 +33,9 @@ export default async function SettingsPage() {
         <h1 className="text-3xl font-black text-gray-900 tracking-tight">Configuración</h1>
         <p className="text-gray-400 mt-1 text-sm">Gestiona tu cuenta y preferencias.</p>
       </div>
+
+      {/* Voz y estilo — la feature nueva */}
+      <VoiceProfile initial={user?.voiceSamples ?? ""} />
 
       {/* Profile */}
       <div className="glass rounded-2xl p-6 border border-white/80">

@@ -9,15 +9,17 @@ export default async function CoverLettersPage() {
   const session = await auth()
   const userId = session!.user!.id!
 
-  const [letters, subscription] = await Promise.all([
+  const [letters, subscription, user] = await Promise.all([
     prisma.coverLetter.findMany({
       where: { userId },
       orderBy: { updatedAt: "desc" },
     }),
     prisma.subscription.findUnique({ where: { userId } }),
+    prisma.user.findUnique({ where: { id: userId }, select: { voiceSamples: true } }),
   ])
 
   const isPro = subscription?.plan === "pro" && subscription.status === "active"
+  const hasVoice = !!user?.voiceSamples?.trim()
 
   return (
     <div className="space-y-8">
@@ -27,7 +29,7 @@ export default async function CoverLettersPage() {
         <p className="text-gray-400 text-sm mt-1">Genera cartas personalizadas con IA en segundos.</p>
       </div>
 
-      <CoverLetterGenerator isPro={isPro} />
+      <CoverLetterGenerator isPro={isPro} hasVoice={hasVoice} />
 
       {letters.length > 0 && (
         <div>
