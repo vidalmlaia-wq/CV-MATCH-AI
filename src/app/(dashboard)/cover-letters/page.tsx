@@ -7,18 +7,15 @@ import { Mail, Eye } from "lucide-react"
 
 export default async function CoverLettersPage() {
   const session = await auth()
-  const userId = session!.user!.id!
+  const userId = session?.user?.id
 
-  const [letters, subscription, user] = await Promise.all([
-    prisma.coverLetter.findMany({
-      where: { userId },
-      orderBy: { updatedAt: "desc" },
-    }),
-    prisma.subscription.findUnique({ where: { userId } }),
-    prisma.user.findUnique({ where: { id: userId }, select: { voiceSamples: true } }),
-  ])
+  const [letters, subscription, user] = userId ? await Promise.all([
+    prisma.coverLetter.findMany({ where: { userId }, orderBy: { updatedAt: "desc" } }).catch(() => []),
+    prisma.subscription.findUnique({ where: { userId } }).catch(() => null),
+    prisma.user.findUnique({ where: { id: userId }, select: { voiceSamples: true } }).catch(() => null),
+  ]) : [[], null, null]
 
-  const isPro = subscription?.plan === "pro" && subscription.status === "active"
+  const isPro = subscription?.plan === "pro" && subscription?.status === "active"
   const hasVoice = !!user?.voiceSamples?.trim()
 
   return (

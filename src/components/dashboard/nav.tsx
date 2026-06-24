@@ -30,7 +30,7 @@ export function DashboardNav({ user }: NavProps) {
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-gray-100">
       <div className="max-w-6xl mx-auto px-6 flex h-16 items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link href="/dashboard" className="flex items-center gap-2 font-semibold text-gray-900 text-sm">
+          <Link href="/" className="flex items-center gap-2 font-semibold text-gray-900 text-sm">
             <div className="h-7 w-7 rounded-lg bg-indigo-600 flex items-center justify-center">
               <Zap className="h-3.5 w-3.5 text-white" />
             </div>

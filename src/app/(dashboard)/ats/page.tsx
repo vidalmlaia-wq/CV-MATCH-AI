@@ -6,19 +6,15 @@ import { TrendingUp } from "lucide-react"
 
 export default async function ATSPage() {
   const session = await auth()
-  const userId = session!.user!.id!
+  const userId = session?.user?.id
 
-  const [resumes, analyses, subscription] = await Promise.all([
-    prisma.resume.findMany({ where: { userId }, select: { id: true, title: true } }),
-    prisma.aTSAnalysis.findMany({
-      where: { userId },
-      orderBy: { createdAt: "desc" },
-      take: 10,
-    }),
-    prisma.subscription.findUnique({ where: { userId } }),
-  ])
+  const [resumes, analyses, subscription] = userId ? await Promise.all([
+    prisma.resume.findMany({ where: { userId }, select: { id: true, title: true } }).catch(() => []),
+    prisma.aTSAnalysis.findMany({ where: { userId }, orderBy: { createdAt: "desc" }, take: 10 }).catch(() => []),
+    prisma.subscription.findUnique({ where: { userId } }).catch(() => null),
+  ]) : [[], [], null]
 
-  const isPro = subscription?.plan === "pro" && subscription.status === "active"
+  const isPro = subscription?.plan === "pro" && subscription?.status === "active"
 
   return (
     <div className="space-y-8">

@@ -15,8 +15,8 @@ export default async function SettingsPage() {
     prisma.user.findUnique({
       where: { id: userId },
       include: { _count: { select: { resumes: true, analyses: true, coverLetters: true } } },
-    }),
-    prisma.subscription.findUnique({ where: { userId } }),
+    }).catch(() => null),
+    prisma.subscription.findUnique({ where: { userId } }).catch(() => null),
   ])
 
   const isPro = subscription?.plan === "pro" && subscription.status === "active"

@@ -2,9 +2,12 @@ import Link from "next/link"
 import {
   FileText, Zap, Target, Mail, Download, BarChart3,
   CheckCircle2, ArrowRight, Sparkles, Star, Users,
-  TrendingUp, Clock, Shield, Mic, Globe,
+  TrendingUp, Clock, Shield, Mic, Globe, X,
 } from "lucide-react"
 import type { Metadata } from "next"
+import { NewsletterSection } from "@/components/landing/newsletter"
+import { ExitIntent } from "@/components/landing/exit-intent"
+import { CheckoutButton } from "@/components/stripe/checkout-button"
 
 export const metadata: Metadata = {
   title: "CVMatch AI — Consigue más entrevistas con IA",
@@ -27,9 +30,9 @@ const steps = [
 ]
 
 const testimonials = [
-  { name: "Laura M.",  role: "Dev Frontend · Santander",    text: "Pasé de 3 meses sin respuestas a 5 entrevistas en 2 semanas. El análisis ATS me abrió los ojos.", initials: "LM" },
-  { name: "Carlos R.", role: "Product Manager · Glovo",     text: "Mi puntuación ATS pasó de 42% a 87% en minutos. Lo mejor: las cartas suenan a mí, no a un robot.", initials: "CR" },
-  { name: "Ana G.",    role: "Data Scientist · Telefónica", text: "La función de perfil de voz es diferencial. Pegué dos emails míos y las cartas que genera son increíbles.", initials: "AG" },
+  { name: "Laura M.",  role: "Dev Frontend · Madrid",    text: "Pasé de 3 meses sin respuestas a 5 entrevistas en 2 semanas. El análisis ATS me abrió los ojos.", color: "from-violet-400 to-indigo-500", initials: "LM" },
+  { name: "Carlos R.", role: "Product Manager · Barcelona", text: "Mi puntuación ATS pasó de 42% a 87% en minutos. Lo mejor: las cartas suenan a mí, no a un robot.", color: "from-pink-400 to-rose-500", initials: "CR" },
+  { name: "Ana G.",    role: "Data Scientist · Madrid", text: "La función de perfil de voz es diferencial. Pegué dos emails míos y las cartas que genera son increíbles.", color: "from-emerald-400 to-teal-500", initials: "AG" },
 ]
 
 const faqs = [
@@ -54,7 +57,7 @@ export default function HomePage() {
             CVMatch AI
           </Link>
           <nav className="hidden md:flex items-center gap-7">
-            {[["#features","Funcionalidades"],["#how-it-works","Cómo funciona"],["#pricing","Precios"],["#faq","FAQ"]].map(([h,l]) => (
+            {[["#features","Funcionalidades"],["#how-it-works","Cómo funciona"],["#pricing","Precios"],["/analizador-cv-gratis","Analizador gratis"],["/historias","Historias"],["/blog","Blog"]].map(([h,l]) => (
               <Link key={h} href={h} className="text-sm text-gray-500 hover:text-gray-900 transition-colors">{l}</Link>
             ))}
           </nav>
@@ -108,8 +111,8 @@ export default function HomePage() {
                   <Link href="/login" className="inline-flex items-center gap-2 bg-gray-900 text-white font-semibold px-7 py-3.5 rounded-full hover:bg-gray-700 transition-all shadow-lg text-sm">
                     Empezar gratis <ArrowRight className="h-4 w-4" />
                   </Link>
-                  <Link href="#how-it-works" className="inline-flex items-center gap-2 glass text-gray-700 font-medium px-6 py-3.5 rounded-full hover:bg-white/80 transition-all text-sm border border-white/80 shadow-sm">
-                    Ver cómo funciona
+                  <Link href="/analizador-cv-gratis" className="inline-flex items-center gap-2 glass text-gray-700 font-medium px-6 py-3.5 rounded-full hover:bg-white/80 transition-all text-sm border border-white/80 shadow-sm">
+                    Analizar mi CV gratis
                   </Link>
                 </div>
 
@@ -185,10 +188,10 @@ export default function HomePage() {
           <div className="max-w-5xl mx-auto px-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               {[
-                { v: "10.000+", l: "Profesionales",    icon: Users,     color: "text-violet-400" },
+                { v: "12.847", l: "CVs analizados esta semana", icon: Users,     color: "text-violet-400" },
                 { v: "87%",     l: "Más entrevistas",  icon: TrendingUp, color: "text-pink-400" },
                 { v: "2 min",   l: "Para crear un CV", icon: Clock,     color: "text-emerald-400" },
-                { v: "4.9/5",   l: "Valoración",       icon: Star,      color: "text-amber-400" },
+                { v: "4.9/5",   l: "Valoración media", icon: Star,      color: "text-amber-400" },
               ].map(s => (
                 <div key={s.l}>
                   <s.icon className={`h-5 w-5 mx-auto mb-2 ${s.color}`} />
@@ -327,7 +330,7 @@ export default function HomePage() {
                   </div>
                   <p className="text-gray-600 text-sm leading-relaxed mb-6">"{t.text}"</p>
                   <div className="flex items-center gap-3">
-                    <div className="h-9 w-9 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">{t.initials}</div>
+                    <div className={`h-10 w-10 rounded-full bg-gradient-to-br ${t.color} flex items-center justify-center font-bold text-xs text-white shrink-0`}>{t.initials}</div>
                     <div>
                       <div className="font-semibold text-sm text-gray-900">{t.name}</div>
                       <div className="text-xs text-gray-400">{t.role}</div>
@@ -389,14 +392,80 @@ export default function HomePage() {
                     </li>
                   ))}
                 </ul>
-                <Link href="/login?plan=pro" className="flex items-center justify-center w-full font-semibold py-3.5 rounded-2xl transition-colors text-sm text-white" style={{ background: "linear-gradient(135deg, #7c3aed, #db2777)" }}>
+                <CheckoutButton className="flex items-center justify-center gap-2 w-full font-semibold py-3.5 rounded-2xl transition-colors text-sm text-white" style={{ background: "linear-gradient(135deg, #7c3aed, #db2777)" }}>
                   Empezar 7 días gratis
-                </Link>
+                </CheckoutButton>
               </div>
             </div>
             <p className="text-center text-xs text-slate-500 mt-6">Sin tarjeta de crédito · Cancela cuando quieras</p>
           </div>
         </section>
+
+        {/* ── COMPARISON TABLE ── */}
+        <section className="py-28 bg-white">
+          <div className="max-w-4xl mx-auto px-6">
+            <div className="text-center mb-14">
+              <p className="text-xs font-semibold text-indigo-600 uppercase tracking-widest mb-3">Comparativa</p>
+              <h2 className="text-4xl font-black text-gray-900 tracking-tight">CVMatch AI vs otras opciones</h2>
+              <p className="text-gray-400 mt-3 text-sm max-w-xl mx-auto">Por qué miles de candidatos eligen CVMatch AI frente a las alternativas genéricas.</p>
+            </div>
+            <div className="overflow-x-auto rounded-3xl border border-gray-100 shadow-sm">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-100">
+                    <th className="text-left p-5 text-gray-500 font-medium w-52">Funcionalidad</th>
+                    <th className="p-5 text-center">
+                      <div className="inline-flex flex-col items-center gap-1">
+                        <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center">
+                          <Zap className="h-3.5 w-3.5 text-white" />
+                        </div>
+                        <span className="font-bold text-gray-900 text-xs">CVMatch AI</span>
+                      </div>
+                    </th>
+                    <th className="p-5 text-center text-gray-400 font-medium text-xs">LinkedIn CV</th>
+                    <th className="p-5 text-center text-gray-400 font-medium text-xs">Europass</th>
+                    <th className="p-5 text-center text-gray-400 font-medium text-xs">Canva</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    ["Análisis ATS con puntuación", true, false, false, false],
+                    ["Keywords exactas que faltan", true, false, false, false],
+                    ["Cartas de presentación IA", true, "Básico", false, false],
+                    ["Perfil de voz personalizado", true, false, false, false],
+                    ["Optimización automática CV", true, false, false, false],
+                    ["Plantillas modernas", true, "Limitado", false, true],
+                    ["ES + EN", true, true, true, true],
+                    ["Gratis para empezar", true, true, true, true],
+                  ].map(([feature, cvmatch, linkedin, europass, canva], i) => (
+                    <tr key={i} className={`border-b border-gray-50 ${i % 2 === 0 ? "bg-white" : "bg-gray-50/50"}`}>
+                      <td className="p-4 text-gray-700 font-medium text-xs">{feature as string}</td>
+                      {[cvmatch, linkedin, europass, canva].map((val, j) => (
+                        <td key={j} className="p-4 text-center">
+                          {val === true ? (
+                            <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full mx-auto ${j === 0 ? "bg-indigo-100" : "bg-emerald-50"}`}>
+                              <CheckCircle2 className={`h-3.5 w-3.5 ${j === 0 ? "text-indigo-600" : "text-emerald-500"}`} />
+                            </span>
+                          ) : val === false ? (
+                            <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 mx-auto">
+                              <X className="h-3.5 w-3.5 text-gray-300" />
+                            </span>
+                          ) : (
+                            <span className="text-xs text-gray-400">{val as string}</span>
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-center text-xs text-gray-300 mt-4">Comparativa basada en funcionalidades públicas a junio 2025.</p>
+          </div>
+        </section>
+
+        {/* ── NEWSLETTER ── */}
+        <NewsletterSection />
 
         {/* ── FAQ — aurora ── */}
         <section id="faq" className="py-28 relative overflow-hidden aurora-bg">
@@ -429,9 +498,14 @@ export default function HomePage() {
             <p className="text-indigo-200 mb-8 text-sm leading-relaxed">
               Únete a más de 10.000 profesionales. Gratis para siempre en el plan básico.
             </p>
-            <Link href="/login" className="inline-flex items-center gap-2 bg-white text-indigo-900 font-bold px-8 py-4 rounded-full hover:bg-indigo-50 transition-all shadow-xl text-sm">
-              Empezar gratis ahora <ArrowRight className="h-4 w-4" />
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link href="/login" className="inline-flex items-center gap-2 bg-white text-indigo-900 font-bold px-8 py-4 rounded-full hover:bg-indigo-50 transition-all shadow-xl text-sm">
+                Empezar gratis <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link href="/analizador-cv-gratis" className="inline-flex items-center gap-2 bg-white/15 text-white font-semibold px-8 py-4 rounded-full hover:bg-white/25 transition-all text-sm border border-white/30">
+                Analizar mi CV gratis
+              </Link>
+            </div>
             <p className="text-xs text-indigo-300/70 mt-4">Sin tarjeta · Gratis para siempre en el plan básico</p>
           </div>
         </section>
@@ -451,11 +525,19 @@ export default function HomePage() {
               </Link>
               <p className="text-sm text-gray-400 max-w-xs">Constructor de CV con IA que aprende tu voz. ES / EN.</p>
             </div>
-            <div className="flex gap-16 text-sm">
+            <div className="flex gap-10 text-sm">
               <div>
                 <p className="font-semibold text-gray-900 mb-3 text-xs uppercase tracking-wider">Producto</p>
                 <ul className="space-y-2 text-gray-400">
-                  {[["#features","Funcionalidades"],["#pricing","Precios"],["#faq","FAQ"]].map(([h,l]) => (
+                  {[["#features","Funcionalidades"],["#pricing","Precios"],["#faq","FAQ"],["/analizador-cv-gratis","Analizador gratis"],["/historias","Historias de éxito"],["/referidos","Referidos"]].map(([h,l]) => (
+                    <li key={h}><Link href={h} className="hover:text-gray-700 transition-colors">{l}</Link></li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <p className="font-semibold text-gray-900 mb-3 text-xs uppercase tracking-wider">CV por perfil</p>
+                <ul className="space-y-2 text-gray-400">
+                  {[["/cv-programador","Programador"],["/cv-disenador","Diseñador"],["/cv-marketing","Marketing"],["/cv-product-manager","Product Manager"],["/cv-data-scientist","Data Scientist"],["/cv-comercial","Comercial"],["/cv-sin-experiencia","Sin experiencia"]].map(([h,l]) => (
                     <li key={h}><Link href={h} className="hover:text-gray-700 transition-colors">{l}</Link></li>
                   ))}
                 </ul>
@@ -476,6 +558,7 @@ export default function HomePage() {
         </div>
       </footer>
 
+      <ExitIntent />
     </div>
   )
 }

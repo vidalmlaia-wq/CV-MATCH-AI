@@ -7,8 +7,10 @@ import {
   Loader2, CheckCircle, XCircle, AlertCircle, Sparkles,
   ChevronRight, FileText, Briefcase, BarChart3, Globe,
   Copy, Check, ArrowRight, TrendingUp, TrendingDown, Minus,
+  Upload, ClipboardPaste,
 } from "lucide-react"
 import Link from "next/link"
+import { FileUpload } from "@/components/ui/file-upload"
 
 interface ATSResult {
   id: string
@@ -63,6 +65,10 @@ const t = {
     back: "Volver",
     cvLength: (n: number) => `${n} caracteres`,
     tip: "Tip: cuanto más texto, mejor análisis",
+    uploadCV: "Subir CV",
+    pasteMode: "Pegar texto",
+    uploadHint: "PDF, DOCX o TXT · máx 5 MB",
+    uploadLabel: "Arrastra tu CV o haz clic para subir",
   },
   en: {
     step1: "Your CV",
@@ -96,6 +102,10 @@ const t = {
     back: "Back",
     cvLength: (n: number) => `${n} characters`,
     tip: "Tip: more text = better analysis",
+    uploadCV: "Upload CV",
+    pasteMode: "Paste text",
+    uploadHint: "PDF, DOCX or TXT · max 5 MB",
+    uploadLabel: "Drag your CV here or click to upload",
   },
 }
 
@@ -133,6 +143,7 @@ function ScoreDial({ score }: { score: number }) {
 export function ATSAnalyzer({ resumes, isPro }: ATSAnalyzerProps) {
   const [lang, setLang] = useState<Lang>("es")
   const [step, setStep] = useState<1 | 2 | 3>(1)
+  const [cvMode, setCvMode] = useState<"paste" | "upload">("upload")
   const [jobTitle, setJobTitle] = useState("")
   const [jobDescription, setJobDescription] = useState("")
   const [resumeText, setResumeText] = useState("")
@@ -253,25 +264,88 @@ export function ATSAnalyzer({ resumes, isPro }: ATSAnalyzerProps) {
       {/* ── STEP 1: CV ── */}
       {step === 1 && (
         <div className="glass rounded-2xl border border-white/80 overflow-hidden">
+          {/* Header */}
           <div className="border-b border-gray-100 px-6 py-4 flex items-center gap-3">
             <div className="h-9 w-9 rounded-xl bg-indigo-50 flex items-center justify-center">
-              <FileText className="h-4.5 w-4.5 text-indigo-600" />
+              <FileText className="h-4 w-4 text-indigo-600" />
             </div>
             <div>
-              <h3 className="font-bold text-gray-900 text-sm">{tx.pasteCV}</h3>
+              <h3 className="font-bold text-gray-900 text-sm">
+                {lang === "es" ? "Tu CV" : "Your CV"}
+              </h3>
               <p className="text-xs text-gray-400">{tx.tip}</p>
             </div>
-            <span className={cn("ml-auto text-xs font-medium px-2 py-0.5 rounded-full", resumeText.length >= 50 ? "bg-emerald-50 text-emerald-600" : "bg-gray-50 text-gray-400")}>
-              {tx.cvLength(resumeText.length)}
-            </span>
+            {/* Mode toggle */}
+            <div className="ml-auto flex items-center gap-1 bg-gray-100 rounded-full p-0.5">
+              <button
+                onClick={() => setCvMode("upload")}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all",
+                  cvMode === "upload" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+                )}
+              >
+                <Upload className="h-3 w-3" />
+                {tx.uploadCV}
+              </button>
+              <button
+                onClick={() => setCvMode("paste")}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all",
+                  cvMode === "paste" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+                )}
+              >
+                <ClipboardPaste className="h-3 w-3" />
+                {tx.pasteMode}
+              </button>
+            </div>
           </div>
-          <textarea
-            value={resumeText}
-            onChange={e => setResumeText(e.target.value)}
-            placeholder={tx.pasteCVPlaceholder}
-            rows={14}
-            className="w-full px-6 py-5 text-sm text-gray-700 placeholder:text-gray-300 bg-transparent resize-none focus:outline-none leading-relaxed"
-          />
+
+          {/* Upload mode */}
+          {cvMode === "upload" && (
+            <div className="px-6 py-5">
+              <FileUpload
+                onText={text => setResumeText(text)}
+                label={tx.uploadLabel}
+                hint={tx.uploadHint}
+              />
+              {resumeText.length >= 50 && (
+                <div className="mt-4 rounded-xl border border-gray-100 bg-gray-50/60">
+                  <div className="px-4 py-2 border-b border-gray-100 flex items-center justify-between">
+                    <span className="text-xs text-gray-500 font-medium">
+                      {lang === "es" ? "Texto extraído" : "Extracted text"}
+                    </span>
+                    <span className="text-xs text-emerald-600 font-medium">{tx.cvLength(resumeText.length)}</span>
+                  </div>
+                  <textarea
+                    value={resumeText}
+                    onChange={e => setResumeText(e.target.value)}
+                    rows={6}
+                    className="w-full px-4 py-3 text-xs text-gray-600 bg-transparent resize-none focus:outline-none leading-relaxed font-mono"
+                  />
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Paste mode */}
+          {cvMode === "paste" && (
+            <div className="relative">
+              <textarea
+                value={resumeText}
+                onChange={e => setResumeText(e.target.value)}
+                placeholder={tx.pasteCVPlaceholder}
+                rows={13}
+                className="w-full px-6 py-5 text-sm text-gray-700 placeholder:text-gray-300 bg-transparent resize-none focus:outline-none leading-relaxed"
+              />
+              <span className={cn(
+                "absolute bottom-3 right-4 text-xs font-medium px-2 py-0.5 rounded-full",
+                resumeText.length >= 50 ? "bg-emerald-50 text-emerald-600" : "bg-gray-50 text-gray-400"
+              )}>
+                {tx.cvLength(resumeText.length)}
+              </span>
+            </div>
+          )}
+
           <div className="border-t border-gray-100 px-6 py-4 flex justify-end">
             <button
               onClick={goToStep2}

@@ -10,6 +10,7 @@ const schema = z.object({
   position: z.string().min(1),
   tone: z.enum(["professional", "enthusiastic", "creative"]).default("professional"),
   lang: z.enum(["es", "en"]).default("es"),
+  prevLettersContext: z.string().optional(),
 })
 
 export async function GET() {
@@ -44,14 +45,19 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json()
-  const { resumeText, jobDescription, company, position, tone, lang } = schema.parse(body)
+  const { resumeText, jobDescription, company, position, tone, lang, prevLettersContext } = schema.parse(body)
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
     select: { voiceSamples: true },
   })
 
-  const content = await generateCoverLetter(resumeText, jobDescription, company, position, tone, lang, user?.voiceSamples)
+  // Combine settings voice profile + uploaded previous letters (uploaded letters take priority)
+  const voiceSamples = prevLettersContext
+    ? (user?.voiceSamples ? `${prevLettersContext}\n\n--- PERFIL DE VOZ GUARDADO ---\n${user.voiceSamples}` : prevLettersContext)
+    : user?.voiceSamples
+
+  const content = await generateCoverLetter(resumeText, jobDescription, company, position, tone, lang, voiceSamples)
 
   const letter = await prisma.coverLetter.create({
     data: {

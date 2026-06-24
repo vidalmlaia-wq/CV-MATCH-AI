@@ -13,12 +13,12 @@ export async function proxy(req: NextRequest) {
     pathname.startsWith("/resumes") ||
     pathname.startsWith("/ats") ||
     pathname.startsWith("/cover-letters") ||
-    pathname.startsWith("/pricing") ||
     pathname.startsWith("/settings")
 
-  if (isDashboard && !isLoggedIn) {
-    return NextResponse.redirect(new URL("/login", req.url))
-  }
+  // DEMO: auth bypass disabled temporarily
+  // if (isDashboard && !isLoggedIn) {
+  //   return NextResponse.redirect(new URL("/login", req.url))
+  // }
 
   if (isAuthPage && isLoggedIn) {
     return NextResponse.redirect(new URL("/dashboard", req.url))
