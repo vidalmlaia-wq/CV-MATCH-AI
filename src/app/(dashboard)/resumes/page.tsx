@@ -81,7 +81,7 @@ export default async function ResumesPage() {
       {resumes.length > 0 && (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
 
-          {resumes.map((resume) => {
+          {resumes.map((resume: (typeof resumes)[number]) => {
             const tpl = TEMPLATES.find(t => t.id === resume.template) ?? TEMPLATES[0]
             return (
               <div

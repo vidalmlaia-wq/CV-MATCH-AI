@@ -32,7 +32,7 @@ export default async function CoverLettersPage() {
         <div>
           <h2 className="text-lg font-bold text-gray-900 mb-4">Cartas guardadas</h2>
           <div className="grid md:grid-cols-2 gap-4">
-            {letters.map((letter) => (
+            {letters.map((letter: (typeof letters)[number]) => (
               <div key={letter.id} className="glass rounded-2xl p-5 border border-white/80">
                 <div className="flex items-start justify-between mb-3">
                   <div>
