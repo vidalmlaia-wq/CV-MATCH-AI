@@ -32,7 +32,7 @@ export default async function ATSPage() {
         <div>
           <h2 className="text-lg font-bold text-gray-900 mb-4">Análisis anteriores</h2>
           <div className="grid gap-3">
-            {analyses.map((a) => (
+            {analyses.map((a: { id: string; jobTitle: string; score: number; createdAt: Date }) => (
               <div key={a.id} className="glass rounded-xl px-5 py-4 flex items-center justify-between border border-white/80">
                 <div>
                   <p className="font-medium text-gray-900">{a.jobTitle}</p>
