@@ -5,10 +5,11 @@ import { ArrowRight, Loader2 } from "lucide-react"
 
 interface Props {
   className?: string
+  style?: React.CSSProperties
   children?: React.ReactNode
 }
 
-export function CheckoutButton({ className, children }: Props) {
+export function CheckoutButton({ className, style, children }: Props) {
   const [loading, setLoading] = useState(false)
 
   async function handleClick() {
@@ -27,7 +28,7 @@ export function CheckoutButton({ className, children }: Props) {
   }
 
   return (
-    <button onClick={handleClick} disabled={loading} className={className}>
+    <button onClick={handleClick} disabled={loading} className={className} style={style}>
       {loading ? (
         <Loader2 className="h-4 w-4 animate-spin" />
       ) : (
